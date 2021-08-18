@@ -11,63 +11,52 @@ public class Level : MonoBehaviour
 
     private Tile[] m_tiles;
 
+    private Vector2Int m_position = new Vector2Int(10, 9);
+    private Tile m_currentTile;
+
     private void Awake()
     {
         LoadFromHierarchy();
+        m_currentTile = GetTileAt(m_position.x, m_position.y);
     }
 
     private void Update()
     {
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        pos = transform.InverseTransformPoint(pos);
-
-        Vector2Int p = new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
-
-        Tile t = GetTileAt(p.x, p.y);
-
-        Debug.Log($"{GetPosition(t)} - N:({GetPosition(t.NorthNeighbour())}, S:({GetPosition(t.SouthNeighbour())}), E:({GetPosition(t.EastNeighbour())}), W:({GetPosition(t.WestNeighbour())})");
-
-        DebugDraw.DrawCross(pos, Color.red);
-        DebugDraw.DrawCross(p, Color.blue);
-
-        if (t == null)
-            return;
-
-        if (t.NorthNeighbour().Pass == Tile.PassMode.PASSABLE)
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            DebugDraw.DrawArrow(t.transform.position, t.NorthNeighbour().transform.position, Color.green);
-        }
-        else
-        {
-            DebugDraw.DrawArrow(t.transform.position, t.NorthNeighbour().transform.position, Color.red);
+            Tile target = m_currentTile.WestNeighbour();
+
+            if (target.Pass == Tile.PassMode.PASSABLE)
+                m_currentTile = target;
         }
 
-        if (t.SouthNeighbour().Pass == Tile.PassMode.PASSABLE)
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            DebugDraw.DrawArrow(t.transform.position, t.SouthNeighbour().transform.position, Color.green);
-        }
-        else
-        {
-            DebugDraw.DrawArrow(t.transform.position, t.SouthNeighbour().transform.position, Color.red);
+            Tile target = m_currentTile.NorthNeighbour();
+
+            if (target.Pass == Tile.PassMode.PASSABLE)
+                m_currentTile = target;
         }
 
-        if (t.EastNeighbour().Pass == Tile.PassMode.PASSABLE)
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            DebugDraw.DrawArrow(t.transform.position, t.EastNeighbour().transform.position, Color.green);
-        }
-        else
-        {
-            DebugDraw.DrawArrow(t.transform.position, t.EastNeighbour().transform.position, Color.red);
+            Tile target = m_currentTile.EastNeighbour();
+
+            if (target.Pass == Tile.PassMode.PASSABLE)
+                m_currentTile = target;
         }
 
-        if (t.WestNeighbour().Pass == Tile.PassMode.PASSABLE)
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            DebugDraw.DrawArrow(t.transform.position, t.WestNeighbour().transform.position, Color.green);
+            Tile target = m_currentTile.SouthNeighbour();
+
+            if (target.Pass == Tile.PassMode.PASSABLE)
+                m_currentTile = target;
         }
-        else
-        {
-            DebugDraw.DrawArrow(t.transform.position, t.WestNeighbour().transform.position, Color.red);
-        }
+
+        Vector2Int p = m_currentTile.Position;
+
+        DebugDraw.DrawCross(m_currentTile.transform.position, Color.blue);
     }
 
     public void LoadFromHierarchy()
@@ -128,13 +117,16 @@ public class Level : MonoBehaviour
             }
         }
 
+        Debug.LogError($"Tried to get position for invalid tile: {tile.name}");
         return new Vector2Int(-1, -1);
     }
 
+    int Mod(int a, int n) => (a % n + n) % n;
+
     public Tile GetTileAt(int x, int y)
     {
-        x = Mathf.Abs(x % m_width);
-        y = Mathf.Abs(y % m_height);
+        x = Mod(x, m_width);
+        y = Mod(y, m_height);
         int i = x + y * m_width;
 
         Tile t = m_tiles[i];

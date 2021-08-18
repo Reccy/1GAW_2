@@ -18,6 +18,8 @@ public class Tile : MonoBehaviour
 
     public PassMode Pass { get { return m_passMode; } }
 
+    public Vector2Int Position { get { return m_pos; } }
+
     public void SubscribeToLevel(Level level)
     {
         m_level = level;
@@ -26,12 +28,12 @@ public class Tile : MonoBehaviour
 
     public Tile NorthNeighbour()
     {
-        return m_level.GetTileAt(m_pos.x, m_pos.y + 1);
+        return m_level.GetTileAt(m_pos.x, m_pos.y - 1);
     }
 
     public Tile SouthNeighbour()
     {
-        return m_level.GetTileAt(m_pos.x, m_pos.y - 1);
+        return m_level.GetTileAt(m_pos.x, m_pos.y + 1);
     }
 
     public Tile EastNeighbour()
