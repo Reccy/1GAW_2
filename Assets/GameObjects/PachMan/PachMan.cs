@@ -4,6 +4,7 @@ public class PachMan : MonoBehaviour
 {
     private Level m_level;
     private Tile m_currentTile;
+    private Tile m_lastTile;
     private Vector2Int m_position;
 
     private Vector2Int m_inputDir;
@@ -30,6 +31,8 @@ public class PachMan : MonoBehaviour
     private bool IsInputtingEast { get { return m_inputDir.x == 1; } }
     private bool IsInputtingWest { get { return m_inputDir.x == -1; } }
 
+    private bool IsMoving { get { return m_currentTile.transform.position != transform.position; } }
+
     private void Update()
     {
         ReadInput();
@@ -37,6 +40,13 @@ public class PachMan : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (IsMoving)
+        {
+            transform.position = Vector2.Lerp(m_lastTile.transform.position, m_currentTile.transform.position, m_currentFrame / (float)m_framesPerTile);
+        }
+
+        DebugDraw.DrawArrow(m_lastTile.transform.position, m_currentTile.transform.position, Color.red);
+
         if (m_currentFrame >= m_framesPerTile)
         {
             m_currentFrame = 0;
@@ -124,14 +134,15 @@ public class PachMan : MonoBehaviour
 
     private void MoveToTile(Tile tile)
     {
+        m_lastTile = m_currentTile;
         m_currentTile = tile;
-        transform.position = tile.transform.position;
     }
 
     public void SubscribeToLevel(Level level, Tile startTile, Vector2Int pos, Vector2Int dir)
     {
         m_level = level;
         m_currentTile = startTile;
+        m_lastTile = startTile;
         m_position = pos;
         m_currentDirection = dir;
         transform.position = m_currentTile.transform.position;
