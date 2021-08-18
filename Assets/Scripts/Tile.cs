@@ -24,6 +24,8 @@ public class Tile : MonoBehaviour
 
     public Vector2Int Position { get { return m_pos; } }
 
+    public Vector2Int RealPosition { get { return new Vector2Int((int)transform.position.x, (int)transform.position.y); } }
+
     public void SubscribeToLevel(Level level)
     {
         m_level = level;
@@ -48,5 +50,15 @@ public class Tile : MonoBehaviour
     public Tile WestNeighbour()
     {
         return m_level.GetTileAt(m_pos.x - 1, m_pos.y);
+    }
+
+    public Tile[] Neighbours()
+    {
+        return new Tile[4] {
+            NorthNeighbour(),
+            SouthNeighbour(),
+            EastNeighbour(),
+            WestNeighbour()
+        };
     }
 }

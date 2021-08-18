@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour
@@ -5,13 +6,31 @@ public class Level : MonoBehaviour
     private int m_width = 28;
     private int m_height = 31;
 
+    [Header("Player Setup")]
     [SerializeField]
     private Vector2Int m_playerStartPosition;
 
     [SerializeField]
     private Vector2Int m_playerStartDirection;
 
+    [Header("Enemy Setup")]
+    [SerializeField]
+    private Vector2Int m_redEnemyStartPosition;
+
+    [SerializeField]
+    private Vector2Int m_redEnemyStartDirection;
+
+    [SerializeField]
+    private Vector2Int m_pinkEnemyStartPosition;
+
+    [SerializeField]
+    private Vector2Int m_pinkEnemyStartDirection;
+
     private PachMan m_pachMan;
+    public PachMan PachMan { get { return m_pachMan; } }
+
+    private Enemy m_redEnemy;
+    private Enemy m_pinkEnemy;
 
     public int Height { get { return m_height; } }
     public int Width { get { return m_width; } }
@@ -23,6 +42,7 @@ public class Level : MonoBehaviour
     {
         LoadFromHierarchy();
         InitPlayer();
+        InitEnemies();
     }
 
     private void LoadFromHierarchy()
@@ -41,6 +61,26 @@ public class Level : MonoBehaviour
     {
         m_pachMan = FindObjectOfType<PachMan>();
         m_pachMan.SubscribeToLevel(this, GetTileAt(m_playerStartPosition), m_playerStartPosition, m_playerStartDirection);
+    }
+
+    private void InitEnemies()
+    {
+        Enemy[] enemies = FindObjectsOfType<Enemy>();
+
+        foreach (Enemy e in enemies)
+        {
+            if (e.IsAggressive)
+            {
+                m_redEnemy = e;
+                e.SubscribeToLevel(this, GetTileAt(m_redEnemyStartPosition), m_redEnemyStartPosition, m_redEnemyStartDirection);
+            }
+
+            if (e.IsSpeedy)
+            {
+                m_pinkEnemy = e;
+                e.SubscribeToLevel(this, GetTileAt(m_pinkEnemyStartPosition), m_pinkEnemyStartPosition, m_pinkEnemyStartDirection);
+            }
+        }
     }
 
 #if UNITY_EDITOR
@@ -109,5 +149,77 @@ public class Level : MonoBehaviour
     public Tile GetTileAt(Vector2Int pos)
     {
         return GetTileAt(pos.x, pos.y);
+    }
+
+    public Path Pathfind(Tile from, Tile to)
+    {
+        // Prepare A*
+        Tile startTile = from;
+        Tile endTile = to;
+
+        Tile current;
+        List<Tile> frontier = new List<Tile>();
+        Dictionary<Tile, float> cellPriority = new Dictionary<Tile, float>();
+        Dictionary<Tile, float> currentCost = new Dictionary<Tile, float>();
+        Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
+
+        // Start the algorithm
+        frontier.Add(startTile);
+        cellPriority.Add(startTile, 0);
+        currentCost.Add(startTile, 0);
+        cameFrom.Add(startTile, null);
+
+        while (frontier.Count > 0)
+        {
+            current = cellPriority.GetSmallest();
+            cellPriority.Remove(current);
+
+            if (current == endTile)
+                break;
+
+            foreach (Tile next in current.Neighbours())
+            {
+                if (next.IsImpassable)
+                    continue;
+
+                float newCost = currentCost[current] + Vector2Int.Distance(current.Position, next.Position);
+
+                if (!currentCost.ContainsKey(next) || newCost < currentCost[next])
+                {
+                    currentCost[next] = newCost;
+
+                    float priority = newCost + Vector2Int.Distance(next.Position, endTile.Position);
+
+                    if (!cellPriority.ContainsKey(next))
+                        cellPriority.Add(next, priority);
+                    else
+                        cellPriority[next] = priority;
+
+                    frontier.Add(next);
+
+                    if (!cameFrom.ContainsKey(next))
+                        cameFrom.Add(next, current);
+                    else
+                        cameFrom[next] = current;
+                }
+            }
+        }
+
+        // Start backtracking through cameFrom to find the cell
+        Path path = new Path();
+
+        current = endTile;
+        while (cameFrom[current] != null)
+        {
+            path.Add(current);
+            current = cameFrom[current];
+        }
+
+        // Add original start and end positions to path
+        path.Add(startTile);
+        path.Reverse();
+        path.Add(endTile);
+
+        return path;
     }
 }

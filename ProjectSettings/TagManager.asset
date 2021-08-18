@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Enemy
+    uniqueID: 3746301583
+    locked: 0
   - name: PachMan
     uniqueID: 4061555187
     locked: 0
