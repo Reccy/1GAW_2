@@ -5,61 +5,27 @@ public class Level : MonoBehaviour
     private int m_width = 28;
     private int m_height = 31;
 
+    [SerializeField]
+    private Vector2Int m_playerStartPosition;
+
+    [SerializeField]
+    private Vector2Int m_playerStartDirection;
+
+    private PachMan m_pachMan;
+
     public int Height { get { return m_height; } }
     public int Width { get { return m_width; } }
     public int Size { get { return m_width * m_height; } }
 
     private Tile[] m_tiles;
 
-    private Vector2Int m_position = new Vector2Int(10, 9);
-    private Tile m_currentTile;
-
     private void Awake()
     {
         LoadFromHierarchy();
-        m_currentTile = GetTileAt(m_position.x, m_position.y);
+        InitPlayer();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Tile target = m_currentTile.WestNeighbour();
-
-            if (target.Pass == Tile.PassMode.PASSABLE)
-                m_currentTile = target;
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            Tile target = m_currentTile.NorthNeighbour();
-
-            if (target.Pass == Tile.PassMode.PASSABLE)
-                m_currentTile = target;
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Tile target = m_currentTile.EastNeighbour();
-
-            if (target.Pass == Tile.PassMode.PASSABLE)
-                m_currentTile = target;
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Tile target = m_currentTile.SouthNeighbour();
-
-            if (target.Pass == Tile.PassMode.PASSABLE)
-                m_currentTile = target;
-        }
-
-        Vector2Int p = m_currentTile.Position;
-
-        DebugDraw.DrawCross(m_currentTile.transform.position, Color.blue);
-    }
-
-    public void LoadFromHierarchy()
+    private void LoadFromHierarchy()
     {
         m_tiles = GetComponentsInChildren<Tile>();
 
@@ -69,6 +35,12 @@ public class Level : MonoBehaviour
         }
 
         Debug.Log($"Loaded {m_tiles.Length} tiles");
+    }
+
+    private void InitPlayer()
+    {
+        m_pachMan = FindObjectOfType<PachMan>();
+        m_pachMan.SubscribeToLevel(this, GetTileAt(m_playerStartPosition), m_playerStartPosition, m_playerStartDirection);
     }
 
 #if UNITY_EDITOR
@@ -132,5 +104,10 @@ public class Level : MonoBehaviour
         Tile t = m_tiles[i];
 
         return t;
+    }
+
+    public Tile GetTileAt(Vector2Int pos)
+    {
+        return GetTileAt(pos.x, pos.y);
     }
 }

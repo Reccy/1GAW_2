@@ -10,6 +10,10 @@ public class Tile : MonoBehaviour
         PASSABLE
     }
 
+    public bool IsImpassable { get { return m_passMode == PassMode.IMPASSABLE; } }
+    public bool IsEnemyOnly { get { return m_passMode == PassMode.ENEMY_ONLY; } }
+    public bool IsPassable { get { return m_passMode == PassMode.PASSABLE; } }
+
     private Level m_level;
     private Vector2Int m_pos;
 
