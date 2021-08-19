@@ -5,7 +5,8 @@ public class Enemy : MonoBehaviour
     enum AI
     {
         AGGRESSIVE,
-        SPEEDY
+        SPEEDY,
+        BASHFUL
     }
 
     [SerializeField]
@@ -15,6 +16,7 @@ public class Enemy : MonoBehaviour
 
     public bool IsAggressive { get { return m_aiMode == AI.AGGRESSIVE; } }
     public bool IsSpeedy { get { return m_aiMode == AI.SPEEDY; } }
+    public bool IsBashful { get { return m_aiMode == AI.BASHFUL; } }
 
     private Actor m_actor;
     public Actor Actor
@@ -31,6 +33,22 @@ public class Enemy : MonoBehaviour
     public Tile GetTile()
     {
         return Actor.CurrentTile;
+    }
+
+    public Tile GetForwardTile()
+    {
+        Tile c = Actor.CurrentTile;
+        Vector2Int cNext = c.Position + (Actor.Direction * new Vector2Int(1, -1));
+
+        return m_level.GetTileAt(cNext);
+    }
+
+    public Tile GetBackwardTile()
+    {
+        Tile c = Actor.CurrentTile;
+        Vector2Int cBack = c.Position + (-Actor.Direction * new Vector2Int(1, -1));
+
+        return m_level.GetTileAt(cBack);
     }
 
     private Level m_level;
@@ -50,6 +68,9 @@ public class Enemy : MonoBehaviour
                 break;
             case AI.SPEEDY:
                 m_ai = new SpeedyAI();
+                break;
+            case AI.BASHFUL:
+                m_ai = new BashfulAI();
                 break;
         }
     }

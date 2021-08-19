@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [SelectionBase]
@@ -60,5 +61,20 @@ public class Tile : MonoBehaviour
             EastNeighbour(),
             WestNeighbour()
         };
+    }
+
+    public Tile[] NeighboursExclude(Tile exclude)
+    {
+        List<Tile> tiles = new List<Tile>();
+
+        foreach (Tile t in Neighbours())
+        {
+            if (exclude == t)
+                continue;
+
+            tiles.Add(t);
+        }
+
+        return tiles.ToArray();
     }
 }

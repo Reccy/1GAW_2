@@ -26,11 +26,22 @@ public class Level : MonoBehaviour
     [SerializeField]
     private Vector2Int m_pinkEnemyStartDirection;
 
+    [SerializeField]
+    private Vector2Int m_blueEnemyStartPosition;
+
+    [SerializeField]
+    private Vector2Int m_blueEnemyStartDirection;
+
     private PachMan m_pachMan;
     public PachMan PachMan { get { return m_pachMan; } }
 
     private Enemy m_redEnemy;
     private Enemy m_pinkEnemy;
+    private Enemy m_blueEnemy;
+
+    public Enemy RedEnemy { get { return m_redEnemy; } }
+    public Enemy PinkEnemy { get { return m_pinkEnemy; } }
+    public Enemy BlueEnemy { get { return m_blueEnemy; } }
 
     public int Height { get { return m_height; } }
     public int Width { get { return m_width; } }
@@ -79,6 +90,12 @@ public class Level : MonoBehaviour
             {
                 m_pinkEnemy = e;
                 e.SubscribeToLevel(this, GetTileAt(m_pinkEnemyStartPosition), m_pinkEnemyStartPosition, m_pinkEnemyStartDirection);
+            }
+
+            if (e.IsBashful)
+            {
+                m_blueEnemy = e;
+                e.SubscribeToLevel(this, GetTileAt(m_blueEnemyStartPosition), m_blueEnemyStartPosition, m_blueEnemyStartDirection);
             }
         }
     }
@@ -151,7 +168,7 @@ public class Level : MonoBehaviour
         return GetTileAt(pos.x, pos.y);
     }
 
-    public Path Pathfind(Tile from, Tile to)
+    public Path Pathfind(Tile from, Tile to, Tile backward)
     {
         // Prepare A*
         Tile startTile = from;
@@ -177,7 +194,7 @@ public class Level : MonoBehaviour
             if (current == endTile)
                 break;
 
-            foreach (Tile next in current.Neighbours())
+            foreach (Tile next in current.NeighboursExclude(backward))
             {
                 if (next.IsImpassable)
                     continue;
