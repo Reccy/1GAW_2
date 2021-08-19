@@ -10,8 +10,6 @@ public class Path
             Vector2Int from = m_tiles[0].RealPosition;
             Vector2Int to = m_tiles[1].RealPosition;
 
-            DebugDraw.DrawArrow(from, to, Color.green);
-
             return to - from;
         }
     }

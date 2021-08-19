@@ -5,6 +5,8 @@ public class SpeedyAI : EnemyAI
     private Path m_path;
     private Tile m_target;
 
+    private Vector2Int ScatterTileCoordinates { get { return new Vector2Int(0, 0); } }
+
     private Color DebugColor { get { return new Color(255.0f / 255.0f, 184.0f / 255.0f, 255.0f / 255.0f); } }
 
     public Tile GetTarget()

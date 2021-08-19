@@ -32,16 +32,24 @@ public class Level : MonoBehaviour
     [SerializeField]
     private Vector2Int m_blueEnemyStartDirection;
 
+    [SerializeField]
+    private Vector2Int m_orangeEnemyStartPosition;
+
+    [SerializeField]
+    private Vector2Int m_orangeEnemyStartDirection;
+
     private PachMan m_pachMan;
     public PachMan PachMan { get { return m_pachMan; } }
 
     private Enemy m_redEnemy;
     private Enemy m_pinkEnemy;
     private Enemy m_blueEnemy;
+    private Enemy m_orangeEnemy;
 
     public Enemy RedEnemy { get { return m_redEnemy; } }
     public Enemy PinkEnemy { get { return m_pinkEnemy; } }
     public Enemy BlueEnemy { get { return m_blueEnemy; } }
+    public Enemy OrangeEnemy { get { return m_orangeEnemy; } }
 
     public int Height { get { return m_height; } }
     public int Width { get { return m_width; } }
@@ -99,6 +107,13 @@ public class Level : MonoBehaviour
                 Debug.Log("Registered Blue Enemy", m_blueEnemy);
                 m_blueEnemy = e;
                 e.SubscribeToLevel(this, GetTileAt(m_blueEnemyStartPosition), m_blueEnemyStartPosition, m_blueEnemyStartDirection);
+            }
+
+            if (e.IsPokey)
+            {
+                Debug.Log("Registered Orange Enemy", m_orangeEnemy);
+                m_orangeEnemy = e;
+                e.SubscribeToLevel(this, GetTileAt(m_orangeEnemyStartPosition), m_orangeEnemyStartPosition, m_orangeEnemyStartDirection);
             }
         }
     }
@@ -254,13 +269,6 @@ public class Level : MonoBehaviour
                 if (!currentCost.ContainsKey(next) || newCost < currentCost[next])
                 {
                     currentCost[next] = newCost;
-
-                    if (next == null)
-                        Debug.LogWarning("Next is null");
-
-                    if (endTile == null)
-                        Debug.LogWarning("End Tile is null");
-
                     float priority = newCost + Vector2Int.Distance(next.Position, endTile.Position);
 
                     if (!cellPriority.ContainsKey(next))

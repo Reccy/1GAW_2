@@ -5,6 +5,8 @@ public class AggressiveAI : EnemyAI
     private Path m_path;
     private Tile m_target;
 
+    private Vector2Int ScatterTileCoordinates { get { return new Vector2Int(27, 0); } }
+
     private Color DebugColor { get { return Color.red; } }
 
     public Tile GetTarget()

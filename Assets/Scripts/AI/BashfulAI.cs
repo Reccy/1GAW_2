@@ -5,6 +5,8 @@ public class BashfulAI : EnemyAI
     private Path m_path;
     private Tile m_target;
 
+    private Vector2Int ScatterTileCoordinates { get { return new Vector2Int(28, 30); } }
+
     private Color DebugColor { get { return new Color(1.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f); } }
 
     public Tile GetTarget()

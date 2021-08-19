@@ -6,7 +6,8 @@ public class Enemy : MonoBehaviour
     {
         AGGRESSIVE,
         SPEEDY,
-        BASHFUL
+        BASHFUL,
+        POKEY
     }
 
     [SerializeField]
@@ -17,6 +18,7 @@ public class Enemy : MonoBehaviour
     public bool IsAggressive { get { return m_aiMode == AI.AGGRESSIVE; } }
     public bool IsSpeedy { get { return m_aiMode == AI.SPEEDY; } }
     public bool IsBashful { get { return m_aiMode == AI.BASHFUL; } }
+    public bool IsPokey { get { return m_aiMode == AI.POKEY; } }
 
     private Actor m_actor;
     public Actor Actor
@@ -77,11 +79,25 @@ public class Enemy : MonoBehaviour
             case AI.BASHFUL:
                 m_ai = new BashfulAI();
                 break;
+            case AI.POKEY:
+                m_ai = new PokeyAI();
+                break;
         }
     }
 
     private void FixedUpdate()
     {
         Actor.InputDir = m_ai.EvaluateInputDir(this, m_level);
+
+        Tile nextTile = m_level.GetTileAt(Actor.CurrentTile.Position + Actor.InputDir);
+
+        DebugDraw.DrawCross(nextTile.transform.position, Color.red);
+
+        // If pathfinding makes us try to turn around, then ignore it and pick a different direction.
+        // This will allow the character to loop around the block if the position stays stationary.
+        if (nextTile == GetBackwardTile())
+        {
+            Actor.InputDir = Actor.CurrentTile.PassableNeighbour(GetBackwardTile()).RealPosition - Actor.CurrentTile.RealPosition;
+        }
     }
 }

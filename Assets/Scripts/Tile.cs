@@ -77,4 +77,29 @@ public class Tile : MonoBehaviour
 
         return tiles.ToArray();
     }
+    
+    public Tile PassableNeighbour(Tile exclude)
+    {
+        foreach (Tile t in NeighboursExclude(exclude))
+        {
+            if (t.IsPassable)
+                return t;
+        }
+
+        Debug.LogWarning("Default PassableNeighbours() return. Logic error!", this);
+        return Neighbours()[0];
+    }
+
+    public int GetAdjacentPassables()
+    {
+        int c = 0;
+
+        foreach (Tile t in Neighbours())
+        {
+            if (t.IsPassable)
+                c++;
+        }
+
+        return c;
+    }
 }
