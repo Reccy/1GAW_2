@@ -35,6 +35,11 @@ public class Enemy : MonoBehaviour
         return Actor.CurrentTile;
     }
 
+    public Tile GetTarget()
+    {
+        return m_ai.GetTarget();
+    }
+
     public Tile GetForwardTile()
     {
         Tile c = Actor.CurrentTile;
@@ -75,7 +80,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Actor.InputDir = m_ai.EvaluateInputDir(this, m_level);
     }

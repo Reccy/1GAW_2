@@ -82,18 +82,21 @@ public class Level : MonoBehaviour
         {
             if (e.IsAggressive)
             {
+                Debug.Log("Registered Red Enemy", m_redEnemy);
                 m_redEnemy = e;
                 e.SubscribeToLevel(this, GetTileAt(m_redEnemyStartPosition), m_redEnemyStartPosition, m_redEnemyStartDirection);
             }
 
             if (e.IsSpeedy)
             {
+                Debug.Log("Registered Pink Enemy", m_pinkEnemy);
                 m_pinkEnemy = e;
                 e.SubscribeToLevel(this, GetTileAt(m_pinkEnemyStartPosition), m_pinkEnemyStartPosition, m_pinkEnemyStartDirection);
             }
 
             if (e.IsBashful)
             {
+                Debug.Log("Registered Blue Enemy", m_blueEnemy);
                 m_blueEnemy = e;
                 e.SubscribeToLevel(this, GetTileAt(m_blueEnemyStartPosition), m_blueEnemyStartPosition, m_blueEnemyStartDirection);
             }
@@ -168,6 +171,35 @@ public class Level : MonoBehaviour
         return GetTileAt(pos.x, pos.y);
     }
 
+    public Tile GetClosestPassableTile(Tile tile)
+    {
+        if (tile.IsPassable)
+        {
+            return tile;
+        }
+
+        float closestDist = 10000;
+        Tile closestTile = null;
+
+        foreach (Tile t in m_tiles)
+        {
+            if (!t.IsPassable)
+                continue;
+
+            float distance = Vector2Int.Distance(t.Position, tile.Position);
+
+            if (distance < closestDist)
+            {
+                closestDist = distance;
+                closestTile = t;
+            }
+        }
+
+        DebugDraw.DrawArrow(tile.transform.position, closestTile.transform.position, Color.black);
+
+        return closestTile;
+    }
+
     public Path Pathfind(Tile from, Tile to, Tile backward)
     {
         // Prepare A*
@@ -189,6 +221,24 @@ public class Level : MonoBehaviour
         while (frontier.Count > 0)
         {
             current = cellPriority.GetSmallest();
+
+            if (current == null)
+            {
+                Path ret = new Path();
+
+                if (from.EastNeighbour().IsPassable)
+                    ret.Add(from.EastNeighbour());
+                else if (from.NorthNeighbour().IsPassable)
+                    ret.Add(from.NorthNeighbour());
+                else if (from.SouthNeighbour().IsPassable)
+                    ret.Add(from.SouthNeighbour());
+                else
+                    ret.Add(from.WestNeighbour());
+
+                ret.Add(from);
+                return ret;
+            }
+
             cellPriority.Remove(current);
 
             if (current == endTile)
@@ -204,6 +254,12 @@ public class Level : MonoBehaviour
                 if (!currentCost.ContainsKey(next) || newCost < currentCost[next])
                 {
                     currentCost[next] = newCost;
+
+                    if (next == null)
+                        Debug.LogWarning("Next is null");
+
+                    if (endTile == null)
+                        Debug.LogWarning("End Tile is null");
 
                     float priority = newCost + Vector2Int.Distance(next.Position, endTile.Position);
 

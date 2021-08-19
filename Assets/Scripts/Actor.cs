@@ -48,8 +48,6 @@ public class Actor : MonoBehaviour
             transform.position = Vector2.Lerp(m_lastTile.transform.position, m_currentTile.transform.position, m_currentFrame / (float)m_framesPerTile);
         }
 
-        DebugDraw.DrawArrow(m_lastTile.transform.position, m_currentTile.transform.position, Color.red);
-
         if (m_currentFrame >= m_framesPerTile)
         {
             m_currentFrame = 0;

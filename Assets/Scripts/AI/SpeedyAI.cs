@@ -5,6 +5,13 @@ public class SpeedyAI : EnemyAI
     private Path m_path;
     private Tile m_target;
 
+    private Color DebugColor { get { return new Color(255.0f / 255.0f, 184.0f / 255.0f, 255.0f / 255.0f); } }
+
+    public Tile GetTarget()
+    {
+        return m_target;
+    }
+
     private Vector2Int EnemyToPlayer(Enemy enemy, Level level)
     {
         PachMan pachMan = level.PachMan;
@@ -17,16 +24,11 @@ public class SpeedyAI : EnemyAI
 
         Tile target = level.GetTileAt(targetPos);
 
-        if (target.IsPassable)
-        {
-            m_target = target;
-        }
-
-        DebugDraw.DrawArrow(current.transform.position, enemy.GetBackwardTile().transform.position, Color.blue);
+        m_target = level.GetClosestPassableTile(target);
 
         m_path = level.Pathfind(current, m_target, enemy.GetBackwardTile());
 
-        m_path.DrawDebug(new Color(255.0f/255.0f, 184.0f/255.0f, 255.0f/255.0f));
+        m_path.DrawDebug(DebugColor);
 
         return m_path.MovementVector;
     }

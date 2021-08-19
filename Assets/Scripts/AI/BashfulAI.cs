@@ -3,6 +3,14 @@
 public class BashfulAI : EnemyAI
 {
     private Path m_path;
+    private Tile m_target;
+
+    private Color DebugColor { get { return new Color(1.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f); } }
+
+    public Tile GetTarget()
+    {
+        return m_target;
+    }
 
     private Vector2Int EnemyToPlayer(Enemy enemy, Level level)
     {
@@ -10,18 +18,27 @@ public class BashfulAI : EnemyAI
         Enemy redEnemy = level.RedEnemy;
 
         Tile current = enemy.GetTile();
-        Tile forward = enemy.GetForwardTile();
-        Tile pachTile = pachMan.GetTile();
-        Vector2Int pachTileForwardPos = pachTile.Position + pachMan.Direction * 2;
 
-        Tile pachTileForward = level.GetTileAt(pachTileForwardPos);
+        Tile pachManForwardTile = level.GetTileAt(pachMan.GetTile().Position + pachMan.Direction * 2 * new Vector2Int(1, -1));
 
-        DebugDraw.DrawArrow(current.transform.position, forward.transform.position, Color.green);
-        DebugDraw.DrawArrow(current.transform.position, enemy.GetBackwardTile().transform.position, Color.blue);
+        Vector2Int redToPach = pachManForwardTile.Position - redEnemy.GetTile().Position;
+        redToPach *= 2;
 
-        m_path = level.Pathfind(current, pachTile, forward);
+        Vector2Int targetPos = redEnemy.GetTile().Position + redToPach;
+        targetPos.Clamp(Vector2Int.zero, new Vector2Int(level.Width - 1, level.Height - 1));
 
-        m_path.DrawDebug(Color.blue);
+        Tile target = level.GetTileAt(targetPos);
+
+        m_target = level.GetClosestPassableTile(target);
+
+        //DebugDraw.DrawCross(pachManForwardTile.RealPosition, DebugColor);
+        DebugDraw.DrawCross(m_target.RealPosition, DebugColor);
+        DebugDraw.DrawArrow(redEnemy.transform.position, pachManForwardTile.transform.position, Color.red);
+        DebugDraw.DrawArrow(pachManForwardTile.transform.position, target.transform.position, Color.green);
+
+        m_path = level.Pathfind(current, m_target, enemy.GetBackwardTile());
+
+        m_path.DrawDebug(DebugColor);
 
         return m_path.MovementVector;
     }

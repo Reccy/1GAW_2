@@ -33592,7 +33592,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4894851453231740070, guid: 99e2086090015784c957c222692ea3c0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99e2086090015784c957c222692ea3c0, type: 3}
@@ -38052,6 +38052,10 @@ PrefabInstance:
     - target: {fileID: 4894851453231740070, guid: 8417cb94cca8bcf4cb03d067bd375ba9, type: 3}
       propertyPath: m_Name
       value: PinkEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4894851453231740070, guid: 8417cb94cca8bcf4cb03d067bd375ba9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8417cb94cca8bcf4cb03d067bd375ba9, type: 3}
