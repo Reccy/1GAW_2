@@ -19,6 +19,15 @@ public class Tile : MonoBehaviour
     private Vector2Int m_pos;
 
     [SerializeField]
+    private Sprite m_sprite;
+
+    private void OnValidate()
+    {
+        if (m_sprite != null)
+            GetComponentInChildren<SpriteRenderer>().sprite = m_sprite;
+    }
+
+    [SerializeField]
     private PassMode m_passMode;
 
     public PassMode Pass { get { return m_passMode; } }
