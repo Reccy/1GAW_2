@@ -45,7 +45,22 @@ public class Actor : MonoBehaviour
     {
         if (IsMoving)
         {
-            transform.position = Vector2.Lerp(m_lastTile.transform.position, m_currentTile.transform.position, m_currentFrame / (float)m_framesPerTile);
+            // Warp code
+            if (Direction == Vector2Int.right && CurrentTile.RealPosition.x < m_lastTile.RealPosition.x)
+            {
+                transform.position = m_currentTile.transform.position;
+                m_currentFrame = m_framesPerTile;
+            }
+            else if (Direction == Vector2Int.left && CurrentTile.RealPosition.x > m_lastTile.RealPosition.x)
+            {
+                transform.position = m_currentTile.transform.position;
+                m_currentFrame = m_framesPerTile;
+            }
+            else
+            {
+                // Normal move
+                transform.position = Vector2.Lerp(m_lastTile.transform.position, m_currentTile.transform.position, m_currentFrame / (float)m_framesPerTile);
+            }
         }
 
         if (m_currentFrame >= m_framesPerTile)
