@@ -1,10 +1,8 @@
 #if UNITY_EDITOR
 using UnityEngine;
-#endif
 
 public class ValidateLevel : MonoBehaviour
 {
-#if UNITY_EDITOR
     private Level m_level;
 
     [InspectorButton("OnValidateLevel")]
@@ -17,5 +15,5 @@ public class ValidateLevel : MonoBehaviour
 
         m_level.Validate();
     }
-#endif
 }
+#endif

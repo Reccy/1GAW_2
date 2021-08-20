@@ -39,7 +39,7 @@ public class Actor : MonoBehaviour
     private bool IsInputtingEast { get { return InputDir.x == 1; } }
     private bool IsInputtingWest { get { return InputDir.x == -1; } }
 
-    private bool IsMoving { get { return m_currentTile.transform.position != transform.position; } }
+    public bool IsMoving { get { return m_currentTile.transform.position != transform.position; } }
 
     private void FixedUpdate()
     {
