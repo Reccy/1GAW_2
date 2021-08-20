@@ -16,6 +16,8 @@ public class PachMan : MonoBehaviour
             return m_actor;
         }
     }
+
+    private GameManager m_gameManager;
     
     public Tile GetTile()
     {
@@ -29,16 +31,38 @@ public class PachMan : MonoBehaviour
         Actor.SubscribeToLevel(level, startTile, pos, dir);
     }
 
+    public void Kill()
+    {
+        m_gameManager.EndGameLose();
+    }
+
     private void Awake()
     {
+        m_gameManager = FindObjectOfType<GameManager>();
         m_actor = GetComponent<Actor>();
         m_animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        ReadInput();
+        if (m_gameManager.IsGameRunning)
+        {
+            ReadInput();
+        }
+        else
+        {
+            m_actor.InputDir = Vector2Int.zero;
+        }
+
         UpdateAnimator();
+    }
+
+    public void OnPachDisappear()
+    {
+        foreach (Enemy e in FindObjectsOfType<Enemy>())
+        {
+            e.Disappear();
+        }
     }
 
     private void ReadInput()
@@ -66,6 +90,12 @@ public class PachMan : MonoBehaviour
 
     private void UpdateAnimator()
     {
+        if (m_gameManager.IsGameLost)
+        {
+            m_animator.SetBool("IsDead", true);
+            return;
+        }
+
         if (Actor.IsMoving)
         {
             m_animator.SetFloat("AnimSpeed", 1);

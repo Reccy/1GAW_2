@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
+    private GameManager m_gameManager;
+
     private Level m_level;
     private Tile m_currentTile;
 
@@ -41,8 +43,16 @@ public class Actor : MonoBehaviour
 
     public bool IsMoving { get { return m_currentTile.transform.position != transform.position; } }
 
+    private void Awake()
+    {
+        m_gameManager = FindObjectOfType<GameManager>();
+    }
+
     private void FixedUpdate()
     {
+        if (!m_gameManager.IsGameRunning)
+            return;
+
         if (IsMoving)
         {
             // Warp code

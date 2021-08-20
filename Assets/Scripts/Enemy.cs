@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour
     public bool IsBashful { get { return m_aiMode == AI.BASHFUL; } }
     public bool IsPokey { get { return m_aiMode == AI.POKEY; } }
 
+    private GameManager m_gameManager;
     private Animator m_animator;
 
     private Actor m_actor;
@@ -72,6 +73,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         m_animator = GetComponent<Animator>();
+        m_gameManager = FindObjectOfType<GameManager>();
 
         switch (m_aiMode)
         {
@@ -96,8 +98,6 @@ public class Enemy : MonoBehaviour
 
         Tile nextTile = m_level.GetTileAt(Actor.CurrentTile.Position + Actor.InputDir);
 
-        DebugDraw.DrawCross(nextTile.transform.position, Color.red);
-
         // If pathfinding makes us try to turn around, then ignore it and pick a different direction.
         // This will allow the character to loop around the block if the position stays stationary.
         if (nextTile == GetBackwardTile())
@@ -113,5 +113,23 @@ public class Enemy : MonoBehaviour
 
         m_animator.SetInteger("xDirection", Actor.Direction.x);
         m_animator.SetInteger("yDirection", Actor.Direction.y);
+
+        if (m_gameManager.IsGameRunning)
+            m_animator.SetFloat("Speed", 1.0f);
+        else
+            m_animator.SetFloat("Speed", 0.0f);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("PachMan"))
+            return;
+
+        FindObjectOfType<PachMan>().Kill();
+    }
+
+    public void Disappear()
+    {
+        GetComponentInChildren<SpriteRenderer>().enabled = false;
     }
 }
