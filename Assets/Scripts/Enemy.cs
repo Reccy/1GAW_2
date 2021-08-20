@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
     public bool IsBashful { get { return m_aiMode == AI.BASHFUL; } }
     public bool IsPokey { get { return m_aiMode == AI.POKEY; } }
 
+    private Animator m_animator;
+
     private Actor m_actor;
     public Actor Actor
     {
@@ -68,6 +70,8 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        m_animator = GetComponent<Animator>();
+
         switch (m_aiMode)
         {
             case AI.AGGRESSIVE:
@@ -99,5 +103,14 @@ public class Enemy : MonoBehaviour
         {
             Actor.InputDir = Actor.CurrentTile.PassableNeighbour(GetBackwardTile()).RealPosition - Actor.CurrentTile.RealPosition;
         }
+    }
+
+    private void Update()
+    {
+        if (m_animator == null)
+            return;
+
+        m_animator.SetInteger("xDirection", Actor.Direction.x);
+        m_animator.SetInteger("yDirection", Actor.Direction.y);
     }
 }
