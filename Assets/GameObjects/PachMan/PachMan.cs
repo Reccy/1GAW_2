@@ -87,6 +87,12 @@ public class PachMan : MonoBehaviour
         Actor.MoveTo(dest);
     }
 
+    public void MoveTo(Tile dest, Vector2Int look)
+    {
+        Actor.MoveTo(dest);
+        Actor.Look(look);
+    }
+
     private void ReadInput()
     {
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -121,6 +127,10 @@ public class PachMan : MonoBehaviour
         {
             m_animator.SetBool("IsDead", true);
             return;
+        }
+        else
+        {
+            m_animator.SetBool("IsDead", false);
         }
 
         if (Actor.IsMoving)

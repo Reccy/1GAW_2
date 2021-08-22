@@ -38,6 +38,25 @@ public class Level : MonoBehaviour
     [SerializeField]
     private Vector2Int m_orangeEnemyStartDirection;
 
+    [Header("Pellet Setup")]
+    [SerializeField]
+    private GameObject m_pelletsPrefab;
+
+    [SerializeField]
+    private GameObject m_pelletsInstance;
+
+    private Tile m_redEnemyStartTile;
+    private Tile m_pinkEnemyStartTile;
+    private Tile m_blueEnemyStartTile;
+    private Tile m_orangeEnemyStartTile;
+    private Tile m_pachManStartTile;
+
+    public Tile RedEnemyStartTile { get { return m_redEnemyStartTile; } }
+    public Tile PinkEnemyStartTile { get { return m_pinkEnemyStartTile; } }
+    public Tile BlueEnemyStartTile { get { return m_blueEnemyStartTile; } }
+    public Tile OrangeEnemyStartTile { get { return m_orangeEnemyStartTile; } }
+    public Tile PachManStartTile { get { return m_pachManStartTile; } }
+
     private PachMan m_pachMan;
     public PachMan PachMan { get { return m_pachMan; } }
 
@@ -79,7 +98,8 @@ public class Level : MonoBehaviour
     private void InitPlayer()
     {
         m_pachMan = FindObjectOfType<PachMan>();
-        m_pachMan.SubscribeToLevel(this, GetTileAt(m_playerStartPosition), m_playerStartPosition, m_playerStartDirection);
+        m_pachManStartTile = GetTileAt(m_playerStartPosition);
+        m_pachMan.SubscribeToLevel(this, m_pachManStartTile, m_playerStartPosition, m_playerStartDirection);
     }
 
     private void InitEnemies()
@@ -92,30 +112,46 @@ public class Level : MonoBehaviour
             {
                 Debug.Log("Registered Red Enemy", m_redEnemy);
                 m_redEnemy = e;
-                e.SubscribeToLevel(this, GetTileAt(m_redEnemyStartPosition), m_redEnemyStartPosition, m_redEnemyStartDirection);
+                m_redEnemyStartTile = GetTileAt(m_redEnemyStartPosition);
+
+                e.SubscribeToLevel(this, m_redEnemyStartTile, m_redEnemyStartPosition, m_redEnemyStartDirection);
             }
 
             if (e.IsSpeedy)
             {
                 Debug.Log("Registered Pink Enemy", m_pinkEnemy);
                 m_pinkEnemy = e;
-                e.SubscribeToLevel(this, GetTileAt(m_pinkEnemyStartPosition), m_pinkEnemyStartPosition, m_pinkEnemyStartDirection);
+                m_pinkEnemyStartTile = GetTileAt(m_pinkEnemyStartPosition);
+
+                e.SubscribeToLevel(this, m_pinkEnemyStartTile, m_pinkEnemyStartPosition, m_pinkEnemyStartDirection);
             }
 
             if (e.IsBashful)
             {
                 Debug.Log("Registered Blue Enemy", m_blueEnemy);
                 m_blueEnemy = e;
-                e.SubscribeToLevel(this, GetTileAt(m_blueEnemyStartPosition), m_blueEnemyStartPosition, m_blueEnemyStartDirection);
+                m_blueEnemyStartTile = GetTileAt(m_blueEnemyStartPosition);
+
+                e.SubscribeToLevel(this, m_blueEnemyStartTile, m_blueEnemyStartPosition, m_blueEnemyStartDirection);
             }
 
             if (e.IsPokey)
             {
                 Debug.Log("Registered Orange Enemy", m_orangeEnemy);
                 m_orangeEnemy = e;
-                e.SubscribeToLevel(this, GetTileAt(m_orangeEnemyStartPosition), m_orangeEnemyStartPosition, m_orangeEnemyStartDirection);
+                m_orangeEnemyStartTile = GetTileAt(m_orangeEnemyStartPosition);
+
+                e.SubscribeToLevel(this, m_orangeEnemyStartTile, m_orangeEnemyStartPosition, m_orangeEnemyStartDirection);
             }
         }
+    }
+
+    public void ResetPellets()
+    {
+        if (m_pelletsInstance.activeInHierarchy)
+            Destroy(m_pelletsInstance);
+
+        m_pelletsInstance = Instantiate(m_pelletsPrefab);
     }
 
 #if UNITY_EDITOR

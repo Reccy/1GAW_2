@@ -23,9 +23,12 @@ public class GameManager : MonoBehaviour
     private int m_currentStateFrame = 0;
     private int m_stateFrames = 60 * 3;
 
+    private Level m_level;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        m_level = FindObjectOfType<Level>();
 
         m_state = GameState.GAME_START;
     }
@@ -55,6 +58,22 @@ public class GameManager : MonoBehaviour
             {
                 m_state = GameState.GAME_START;
                 m_currentStateFrame = 0;
+
+                m_level.RedEnemy.Appear();
+                m_level.BlueEnemy.Appear();
+                m_level.OrangeEnemy.Appear();
+                m_level.PinkEnemy.Appear();
+
+                m_level.RedEnemy.MoveTo(m_level.RedEnemyStartTile, Vector2Int.right);
+                m_level.BlueEnemy.MoveTo(m_level.BlueEnemyStartTile, Vector2Int.right);
+                m_level.OrangeEnemy.MoveTo(m_level.OrangeEnemyStartTile, Vector2Int.right);
+                m_level.PinkEnemy.MoveTo(m_level.PinkEnemyStartTile, Vector2Int.right);
+
+                m_level.PachMan.MoveTo(m_level.PachManStartTile, Vector2Int.right);
+
+                m_level.ResetPellets();
+
+                ResetScore();
             }
         }
     }

@@ -99,6 +99,11 @@ public class Actor : MonoBehaviour
         transform.position = m_currentTile.transform.position;
     }
 
+    public void Look(Vector2Int dir)
+    {
+        m_currentDirection = dir;
+    }
+
     private void Move()
     {
         // Read Input

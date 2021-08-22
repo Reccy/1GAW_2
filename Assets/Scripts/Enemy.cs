@@ -132,4 +132,15 @@ public class Enemy : MonoBehaviour
     {
         GetComponentInChildren<SpriteRenderer>().enabled = false;
     }
+
+    public void Appear()
+    {
+        GetComponentInChildren<SpriteRenderer>().enabled = true;
+    }
+
+    public void MoveTo(Tile dest, Vector2Int lookDir)
+    {
+        Actor.MoveTo(dest);
+        Actor.Look(lookDir);
+    }
 }
