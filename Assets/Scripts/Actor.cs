@@ -93,6 +93,12 @@ public class Actor : MonoBehaviour
         return tile.IsEnemyOnly;
     }
 
+    public void MoveTo(Tile dest)
+    {
+        m_currentTile = dest;
+        transform.position = m_currentTile.transform.position;
+    }
+
     private void Move()
     {
         // Read Input

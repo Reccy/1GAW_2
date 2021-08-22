@@ -18,7 +18,16 @@ public class PachMan : MonoBehaviour
     }
 
     private GameManager m_gameManager;
-    
+
+    private SpriteRenderer m_spriteRenderer;
+
+    private int m_powerPelletTimer = 0;
+
+    [SerializeField]
+    private int m_powerPelletTimerMax = 128;
+
+    public bool IsReadyToUsePowerPellet { get { return m_powerPelletTimer == 0; } }
+
     public Tile GetTile()
     {
         return Actor.CurrentTile;
@@ -41,6 +50,7 @@ public class PachMan : MonoBehaviour
         m_gameManager = FindObjectOfType<GameManager>();
         m_actor = GetComponent<Actor>();
         m_animator = GetComponent<Animator>();
+        m_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Update()
@@ -57,12 +67,24 @@ public class PachMan : MonoBehaviour
         UpdateAnimator();
     }
 
+    private void FixedUpdate()
+    {
+        if (m_powerPelletTimer > 0)
+            m_powerPelletTimer -= 1;
+    }
+
     public void OnPachDisappear()
     {
         foreach (Enemy e in FindObjectsOfType<Enemy>())
         {
             e.Disappear();
         }
+    }
+
+    public void MoveTo(Tile dest)
+    {
+        m_powerPelletTimer = m_powerPelletTimerMax;
+        Actor.MoveTo(dest);
     }
 
     private void ReadInput()
@@ -90,6 +112,11 @@ public class PachMan : MonoBehaviour
 
     private void UpdateAnimator()
     {
+        if (IsReadyToUsePowerPellet)
+            m_spriteRenderer.color = Color.white;
+        else
+            m_spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+
         if (m_gameManager.IsGameLost)
         {
             m_animator.SetBool("IsDead", true);

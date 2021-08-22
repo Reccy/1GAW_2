@@ -7,10 +7,16 @@ public class PowerPellet : MonoBehaviour
     private SpriteRenderer m_spriteRenderer;
     private bool m_collected = false;
 
+    private PachMan m_pachMan;
+
+    [SerializeField]
+    private Tile nextTile;
+
     private void Awake()
     {
         m_gameManager = FindObjectOfType<GameManager>();
         m_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        m_pachMan = FindObjectOfType<PachMan>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -21,8 +27,9 @@ public class PowerPellet : MonoBehaviour
         if (!collision.gameObject.CompareTag("PachMan"))
             return;
 
-        m_gameManager.AddScore(50);
-        m_spriteRenderer.enabled = false;
-        m_collected = true;
+        if (m_pachMan.IsReadyToUsePowerPellet)
+        {
+            m_pachMan.MoveTo(nextTile);
+        }
     }
 }
