@@ -18009,6 +18009,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7207169574564974056, guid: 3951c06d0a2589f4faff2316a9d5b022, type: 3}
   m_PrefabInstance: {fileID: 667525605}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &673504562 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4764449585389140818, guid: 7a6efb11b0d75cd4fac1dd887a73812f, type: 3}
+  m_PrefabInstance: {fileID: 4764449585789970016}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &674237342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31741,8 +31746,8 @@ MonoBehaviour:
   m_blueEnemyStartDirection: {x: 1, y: 0}
   m_orangeEnemyStartPosition: {x: 15, y: 14}
   m_orangeEnemyStartDirection: {x: 1, y: 0}
-  m_pelletsPrefab: {fileID: 0}
-  m_pelletsInstance: {fileID: 0}
+  m_pelletsPrefab: {fileID: 4764449585389140818, guid: 7a6efb11b0d75cd4fac1dd887a73812f, type: 3}
+  m_pelletsInstance: {fileID: 673504562}
 --- !u!114 &1120519857
 MonoBehaviour:
   m_ObjectHideFlags: 0

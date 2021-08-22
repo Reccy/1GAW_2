@@ -76,6 +76,33 @@ public class GameManager : MonoBehaviour
                 ResetScore();
             }
         }
+
+        if (IsGameWon)
+        {
+            if (m_currentStateFrame < m_stateFrames)
+            {
+                m_currentStateFrame++;
+            }
+            else
+            {
+                m_state = GameState.GAME_START;
+                m_currentStateFrame = 0;
+
+                m_level.RedEnemy.Appear();
+                m_level.BlueEnemy.Appear();
+                m_level.OrangeEnemy.Appear();
+                m_level.PinkEnemy.Appear();
+
+                m_level.RedEnemy.MoveTo(m_level.RedEnemyStartTile, Vector2Int.right);
+                m_level.BlueEnemy.MoveTo(m_level.BlueEnemyStartTile, Vector2Int.right);
+                m_level.OrangeEnemy.MoveTo(m_level.OrangeEnemyStartTile, Vector2Int.right);
+                m_level.PinkEnemy.MoveTo(m_level.PinkEnemyStartTile, Vector2Int.right);
+
+                m_level.PachMan.MoveTo(m_level.PachManStartTile, Vector2Int.right);
+
+                m_level.ResetPellets();
+            }
+        }
     }
 
     public int GetScore()
@@ -103,5 +130,10 @@ public class GameManager : MonoBehaviour
     public void EndGameLose()
     {
         m_state = GameState.GAME_END_LOSE;
+    }
+
+    public void WinGame()
+    {
+        m_state = GameState.GAME_END_WIN;
     }
 }

@@ -133,7 +133,7 @@ public class PachMan : MonoBehaviour
             m_animator.SetBool("IsDead", false);
         }
 
-        if (Actor.IsMoving)
+        if (Actor.IsMoving && m_gameManager.IsGameRunning)
         {
             m_animator.SetFloat("AnimSpeed", 1);
         }

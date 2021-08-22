@@ -125,7 +125,7 @@ public class Enemy : MonoBehaviour
         if (!collision.CompareTag("PachMan"))
             return;
 
-        FindObjectOfType<PachMan>().Kill();
+        m_level.PachMan.Kill();
     }
 
     public void Disappear()

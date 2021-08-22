@@ -7,6 +7,8 @@ public class Pellet : MonoBehaviour
     private SpriteRenderer m_spriteRenderer;
     private bool m_collected = false;
 
+    public bool IsCollected { get { return m_collected; } }
+
     private void Awake()
     {
         m_gameManager = FindObjectOfType<GameManager>();
@@ -24,5 +26,19 @@ public class Pellet : MonoBehaviour
         m_gameManager.AddScore(10);
         m_spriteRenderer.enabled = false;
         m_collected = true;
+
+        int collectedAmount = 0;
+        var pellets = FindObjectsOfType<Pellet>();
+
+        foreach (var pellet in pellets)
+        {
+            if (pellet.IsCollected)
+                collectedAmount++;
+        }
+
+        if (pellets.Length == collectedAmount)
+        {
+            m_gameManager.WinGame();
+        }
     }
 }
